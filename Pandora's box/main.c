@@ -6,15 +6,24 @@
 
 int main()
 {
+     //note to check init always before checking
   clk_en();
   gpioa_input_config();
   gpiob_output_config();
   pwm_config();
+  //can also implement count based junction identification
+  //first test with 4 central ir
+  //second with 6 central ir
   while(1)
   {
 	  //       1
-	  //   2        3  - ir sensor placement corresponding with gpios
+	  //   2        3  - ir sensor placement corresponding with gpios (4 central)
 	  //       0
+
+	  //        1
+	  //  5 2       3  6  - ir sensor placement corresponding with gpios (6 central)
+	  //        0
+
 	  if (GPIOA->IDR == (1 << 6))  // main if superstructure for light surface (non-inverted)
 	  {
          if (!(GPIOA->IDR & (1 << 0)) && !(GPIOA->IDR & (1 << 1)) && (GPIOA->IDR & (1 << 2)) && (GPIOA->IDR & (1 << 3))) // Going straight
