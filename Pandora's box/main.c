@@ -60,43 +60,55 @@ int main()
              full_speed_left();
              half_speed_right();
         }
+         else if (!(GPIOA->IDR & (1 << 0)) || !(GPIOA->IDR & (1 << 1)))
+        {
+             printf("partial straight\n");
+             full_speed();
+
+       }
 	  }
 	  else  // else super-structure for dark surface (inverted)
 	  {
 		  if ((GPIOA->IDR & (1 << 0)) && (GPIOA->IDR & (1 << 1)) && !(GPIOA->IDR & (1 << 2)) && !(GPIOA->IDR & (1 << 3))) // Going straight
 		          {
-		         	 printf("going straight\n");
+		         	 printf("going straight inv\n");
 		         	 full_speed();
 		          }
 		          else if ((GPIOA->IDR & (1 << 2)) && !(GPIOA->IDR & (1 << 3))) // Turning left
 		 		 {
-		         	 printf("turning left\n");
+		         	 printf("turning left inv\n");
 		         	 full_speed_right();
 		         	 half_speed_left();
 		 		 }
 		          else if (!(GPIOA->IDR & (1 << 2)) && (GPIOA->IDR & (1 << 3)))
 		          {
-		              printf("turning right\n");
+		              printf("turning right inv\n");
 		         	 full_speed_left();
 		         	 half_speed_right();
 		          }
 		          else if ((GPIOA->IDR & (1 << 0)) && (GPIOA->IDR & (1 << 1)) && (GPIOA->IDR & (1 << 2)) && (GPIOA->IDR & (1 << 3)))
 		          {
-		         	 printf("junction detected\n");
+		         	 printf("junction detected inv\n");
 		         	 full_speed();
 		          }
 		          else if ((GPIOA->IDR & (1 << 0)) && (GPIOA->IDR & (1 << 1)) && (GPIOA->IDR & (1 << 2)) && !(GPIOA->IDR & (1 << 3)))
 		          {
-		         	 printf("left t junction detected\n");
+		         	 printf("left t junction detected inv\n");
 		         	 full_speed_right();
 		         	 half_speed_left();
 		          }
 		          else if ((GPIOA->IDR & (1 << 0)) && (GPIOA->IDR & (1 << 1)) && !(GPIOA->IDR & (1 << 2)) && (GPIOA->IDR & (1 << 3)))
 		         {
-		              printf("right t junction detected\n");
+		              printf("right t junction detected inv\n");
 		              full_speed_left();
 		              half_speed_right();
 		         }
+		          else if ((GPIOA->IDR & (1 << 0)) || (GPIOA->IDR & (1 << 1)))
+		         {
+		                    printf("partial straight inv\n");
+		                    full_speed();
+                 }
+
 	  }
   }
 
