@@ -1,3 +1,6 @@
+// Code by Aryan Basnet
+//07-09-2024
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <unistd.h>
