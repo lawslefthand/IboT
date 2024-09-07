@@ -1,7 +1,9 @@
 # IboT
-All code for Ibot projects.
+Codebase for Ibot projects.
 
 Bots made by us:
+
+**************
 
 Resh - Robo Wrestling (Sumo) Bot
 Resh is a sumo wrestling robot built using the ESP-IDF framework on the ESP32, designed for robo wrestling competitions. It leverages the power of FreeRTOS for independent, parallel control of its left and right wheel sets, ensuring quick and precise movements during combat. The bot is equipped with an L298N motor driver to power the motors efficiently and is programmed entirely using C within the ESP-IDF environment.
