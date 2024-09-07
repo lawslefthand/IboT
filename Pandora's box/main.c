@@ -1,3 +1,6 @@
+// Code by Aryan Basnet
+//07-09-2024
+
 #include <stdint.h>
 #include "stm32f030x8.h"
 #include "usart.h"
