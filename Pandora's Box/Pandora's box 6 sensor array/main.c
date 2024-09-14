@@ -35,13 +35,13 @@ int main()
 		 {
         	 printf("turning left\n");
         	 full_speed_right();
-        	 half_speed_left();
+        	 stop_left();
 		 }
          else if (((GPIOA->IDR & (1 << 2)) || (GPIOA->IDR & (1 << 5))) && (!(GPIOA->IDR & (1 << 3)) || !(GPIOA->IDR & (1 << 6))))
          {
              printf("turning right\n");
         	 full_speed_left();
-        	 half_speed_right();
+             stop_right();
          }
          else if (!(GPIOA->IDR & (1 << 0)) && !(GPIOA->IDR & (1 << 1)) && (!(GPIOA->IDR & (1 << 2))) && !(GPIOA->IDR & (1 << 3)))
          {
@@ -52,13 +52,13 @@ int main()
          {
         	 printf("left t junction detected\n");
         	 full_speed_right();
-        	 half_speed_left();
+        	 stop_left();
          }
          else if (!(GPIOA->IDR & (1 << 0)) && !(GPIOA->IDR & (1 << 1)) && (GPIOA->IDR & (1 << 2)) && (!(GPIOA->IDR & (1 << 3)) || !(GPIOA->IDR & (1 << 6))))
         {
              printf("right t junction detected\n");
              full_speed_left();
-             half_speed_right();
+             stop_right();
         }
          else if (!(GPIOA->IDR & (1 << 0)) || !(GPIOA->IDR & (1 << 1)))
         {
@@ -78,13 +78,13 @@ int main()
 		 		 {
 		         	 printf("turning left inv\n");
 		         	 full_speed_right();
-		         	 half_speed_left();
+		         	 stop_left();
 		 		 }
 		          else if (!(GPIOA->IDR & (1 << 2)) && (GPIOA->IDR & (1 << 3)))
 		          {
 		              printf("turning right inv\n");
 		         	 full_speed_left();
-		         	 half_speed_right();
+		         	 stop_right();
 		          }
 		          else if ((GPIOA->IDR & (1 << 0)) && (GPIOA->IDR & (1 << 1)) && (GPIOA->IDR & (1 << 2)) && (GPIOA->IDR & (1 << 3)))
 		          {
@@ -95,13 +95,13 @@ int main()
 		          {
 		         	 printf("left t junction detected inv\n");
 		         	 full_speed_right();
-		         	 half_speed_left();
+		         	 stop_left();
 		          }
 		          else if ((GPIOA->IDR & (1 << 0)) && (GPIOA->IDR & (1 << 1)) && !(GPIOA->IDR & (1 << 2)) && ((GPIOA->IDR & (1 << 3)) || (GPIOA->IDR & (1 << 6))))
 		         {
 		              printf("right t junction detected inv\n");
 		              full_speed_left();
-		              half_speed_right();
+		              stop_right();
 		         }
 		          else if ((GPIOA->IDR & (1 << 0)) || (GPIOA->IDR & (1 << 1)))
 		         {
