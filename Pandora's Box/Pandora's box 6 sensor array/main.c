@@ -11,12 +11,12 @@ int main()
   clk_en();
   gpioa_input_config();
   gpiob_output_config();
-  pwm_config();
+
   //can also implement count based junction identification
   //first test with 4 central ir
   //second with 6 central ir
   while(1)
-  { //          1
+  { //       1
 	//   5 2  3 6  sensor placement
 	//       0
 	  if (GPIOA->IDR == (1 << 6))  // main if super-structure for light surface (non-inverted)
