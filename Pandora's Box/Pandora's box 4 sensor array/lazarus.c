@@ -46,11 +46,25 @@ void gpioa_input_config(void)
 void gpiob_output_config(void)
 {
 
-	   GPIOA->MODER  &=~(1<<8);
-	   GPIOA->MODER  |= (1<<9);
-	   //
-	   GPIOA->MODER  &=~(1<<10);
-	   GPIOA->MODER  |= (1<<11);
+
+	   GPIOB->MODER  |= (1<<0); //PB0  ENA
+	   GPIOB->MODER  &=~ (1<<1);
+
+	   GPIOB->MODER  |= (1<<2); //PB1  IN1
+	   GPIOB->MODER  &=~ (1<<3);
+
+	   GPIOB->MODER  |= (1<<4); //PB2  IN2
+	   GPIOB->MODER  &=~ (1<<5);
+
+	   GPIOB->MODER  |= (1<<6); //PB3  ENB
+	   GPIOB->MODER  &=~ (1<<7);
+
+	   GPIOB->MODER  |= (1<<8); //PB4  IN3
+	   GPIOB->MODER  &=~ (1<<9);
+
+	   GPIOB->MODER  |= (1<<10); //PB5 IN4
+	   GPIOB->MODER  &=~ (1<<11);
+
 
 }
 
@@ -80,88 +94,95 @@ void gpio_pupdr_config(void)
 	   GPIOA->PUPDR  |= (1<<13);
 }
 
-void pwm_config(void)
-{
-   //PSC AND ARR VALUES
-   TIM3->PSC = 	7;
-   TIM3->ARR =  49;
-   //CCMR RESET
-   TIM3->CCMR1 = 0;
-   //channel 1
-   TIM3->CCMR1 &=~ (1<<4);
-   TIM3->CCMR1 |= (1<<5);
-   TIM3->CCMR1 |= (1<<6);
-   TIM3->CCMR1 |=  (1<<3);
-  //channel  2
-   TIM3->CCMR1 &=~ (1<<12);
-   TIM3->CCMR1 |= (1<<13);
-   TIM3->CCMR1 |= (1<<14);
-   TIM3->CCMR1 |=  (1<<15);
-
-   TIM3->CCER  = 0;
-   //CH1
-   TIM3->CCER  |= (1<<0);
-   //CH2
-   TIM3->CCER |=  (1<<4);
-   //CR RESET
-   TIM3->CR1   = 0;
 
 
-
-}
-
-void pwm_en(void)
-{
-
-    TIM3->CR1 |= (1<<7);
-	TIM3->CR1 |= (1<<0);
-
-}
 
 void full_speed(void)
 {
-	TIM3->CCR1 = 49;
-	TIM3->CCR2 = 49;
+	 GPIOB->BSRR |=  (1<<0);
+	 GPIOB->BSRR |=  (1<<1);
+	 GPIOB->BSRR &=~ (1<<2);
+	 GPIOB->BSRR |=  (1<<3);
+	 GPIOB->BSRR |=  (1<<4);
+	 GPIOB->BSRR &=~ (1<<5);
 
 }
 
 void full_speed_left(void)
 {
-	TIM3->CCR1 = 49;
+	GPIOB->BSRR |=  (1<<0);
+    GPIOB->BSRR |=  (1<<1);
+    GPIOB->BSRR &=~ (1<<2);
+
+    GPIOB->BSRR |=  (1<<3);
+    GPIOB->BSRR &=~  (1<<4);
+    GPIOB->BSRR &=~ (1<<5);
+
 
 }
 void full_speed_right(void)
 {
+	GPIOB->BSRR |=  (1<<3);
+    GPIOB->BSRR |=  (1<<4);
+    GPIOB->BSRR &=~ (1<<5);
 
-	TIM3->CCR2 = 49;
+    GPIOB->BSRR  |=    (1<<0);
+    GPIOB->BSRR  &=~  (1<<1);
+    GPIOB->BSRR  &=~   (1<<2);
+
 }
 
-void half_speed_left(void)
+void reverse_left(void)
 {
-	TIM3->CCR1 = 25;
-}
+	    GPIOB->BSRR |=  (1<<0);
+	    GPIOB->BSRR &=~  (1<<1);
+	    GPIOB->BSRR |= (1<<2);
 
-void half_speed_right(void)
+
+}
+void reverse_right(void)
 {
-	TIM3->CCR2 = 25;
+	  GPIOB->BSRR |=  (1<<0);
+	  GPIOB->BSRR &=~  (1<<1);
+	  GPIOB->BSRR |=    (1<<2);
+
 }
 
 void stop_left(void)
 {
-	TIM3->CCR1 = 0;
+	    GPIOB->BSRR &=~  (1<<3);
+	    GPIOB->BSRR &=~  (1<<4);
+	    GPIOB->BSRR &=~ (1<<5);
+
 
 }
 
 void stop_right(void)
 {
-	TIM3->CCR2 = 0;
+	  GPIOB->BSRR &=~  (1<<3);
+      GPIOB->BSRR &=~  (1<<4);
+      GPIOB->BSRR &=~ (1<<5);
 }
 
 void stop(void)
 {
-	TIM3->CCR1 = 0;
-	TIM3->CCR2 = 0;
+	        GPIOB->BSRR &=~  (1<<3);
+		    GPIOB->BSRR &=~  (1<<4);
+		    GPIOB->BSRR &=~ (1<<5);
+		    GPIOB->BSRR &=~  (1<<3);
+		    GPIOB->BSRR &=~  (1<<4);
+		    GPIOB->BSRR &=~ (1<<5);
+
 }
+
+void delay_1_sec(void) {
+    uint32_t count = 8000000;
+
+    while (count > 0) {
+        count--;
+    }
+}
+
 
 
 
