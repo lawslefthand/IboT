@@ -4,6 +4,7 @@ Codebase for Ibot projects.
 Bots made by us:
 
 **************
+![image](https://github.com/user-attachments/assets/10f8b5f2-208d-4f7a-b701-85d22024adaa)
 
 Resh - Robo Wrestling (Sumo) Bot
 Resh is a sumo wrestling robot built using the ESP-IDF framework on the ESP32, designed for robo wrestling competitions. It leverages the power of FreeRTOS for independent, parallel control of its left and right wheel sets, ensuring quick and precise movements during combat. The bot is equipped with an L298N motor driver to power the motors efficiently and is programmed entirely using C within the ESP-IDF environment.
@@ -15,6 +16,7 @@ Key Features:
 4)Autonomous Behavior: Designed for sumo wrestling competitions with automated strategies.
 
 *************
+![image](https://github.com/user-attachments/assets/2ce540c7-4a0a-493d-913a-5db3a254d530)
 
 Pandara's Box - Competitive Line-Following Robot
 Pandara's Box is a line-following robot developed for the "Search and Destroy" competition at COEP MindSpark. This bot is built on the STM32 Nucleo-F030R8 and uses digital IR sensors to detect lines and intersections. It features advanced detection of T-junctions (left, right, and straight) and inverted color patterns, ensuring it can navigate complex tracks.
