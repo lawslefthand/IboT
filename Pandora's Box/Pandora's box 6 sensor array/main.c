@@ -4,171 +4,102 @@
 #include <stdio.h>
 #include "lazarus_header.h"
 
-
 int main()
 {
-     //note to check init always before checking
-  clk_en();
-  gpioa_input_config();
-  gpiob_output_config();
+    // Initialize clock, GPIOs, and USART
+    clk_en();
+    gpioa_input_config();
+    gpiob_output_config();
+    usart_init();
+    usart_gpio_init();
+    usart_init();
 
-  //can also implement count based junction identification
-  //first test with 4 central ir
-  //second with 6 central ir
-  while(1)
-  { //       1
-	//   5 2  3 6  sensor placement
-	//       0
-	  if (GPIOA->IDR == (1 << 6))  // main if super-structure for light surface (non-inverted)
-	  {
+    while(1)
+    {
+    	delay_1_sec();
 
-         if (!(GPIOA->IDR & (1 << 0)) && !(GPIOA->IDR & (1 << 1)) && (!(GPIOA->IDR & (1 << 2)) || !(GPIOA->IDR & (1 << 5)) ) && (GPIOA->IDR & (1 << 3)))
-         {
-        	 printf("left t junction detected\n");
-        	 while (!(GPIOA->IDR & (1 << 3)))
-                  {
-        	       full_speed_right();
-        	       stop_left();
-                 };
-         }
+        // Print sensor states (high/low) before the decision-making logic
+        printf("PA0 (Center): %d, PA1 (Front Center): %d, PA7 (Left): %d, PA5 (Left): %d, PA10 (Right): %d, PA6 (Right): %d\n",
+                !(GPIOA->IDR & (1 << 0)), !(GPIOA->IDR & (1 << 1)), !(GPIOA->IDR & (1 << 7)),
+                !(GPIOA->IDR & (1 << 5)), !(GPIOA->IDR & (1 << 10)), !(GPIOA->IDR & (1 << 6)));
 
-         else if (!(GPIOA->IDR & (1 << 0)) && !(GPIOA->IDR & (1 << 1)) && (GPIOA->IDR & (1 << 2)) && (!(GPIOA->IDR & (1 << 3)) || !(GPIOA->IDR & (1 << 6))))
-         {
-              printf("right t junction detected\n");
-              while (!(GPIOA->IDR & (1 << 2)))
-                  {
-                     full_speed_left();
-                      stop_right();
-                  }
-         }
-         else if (!(GPIOA->IDR & (1 << 0)) && !(GPIOA->IDR & (1 << 1)) && (!(GPIOA->IDR & (1 << 2))) && !(GPIOA->IDR & (1 << 3)))
-         {
-        	 int x = 0;
-        	 x++;
-        	 printf("t junction detected\n");
-        	 if((x == 0) || (x==1))
-        	 {
-        	    full_speed();
-        	}
-        	 else if ((x == 2) || (x==3))
-        	 {
-        	     while (!(GPIOA->IDR & (1 << 3)))
-        	     {
-        	    	 full_speed_right();
-        	    	 stop_left();
-        	     }
-
-        	 }
-         }
-
-         else if (((GPIOA->IDR & (1 << 2)) || (GPIOA->IDR & (1 << 5))) && (!(GPIOA->IDR & (1 << 3)) || !(GPIOA->IDR & (1 << 6))))
-         {
-             printf("turning right\n");
-        	 full_speed_left();
-             stop_right();
-         }
-
-
-         else if ((!(GPIOA->IDR & (1 << 2)) || !(GPIOA->IDR & (1 << 5))  ) && ((GPIOA->IDR & (1 << 3)) || (GPIOA->IDR & (1 << 6)))) // Turning left
-		 {
-        	 printf("turning left\n");
-        	 full_speed_right();
-        	 stop_left();
-		 }
-
-
-         else if (!(GPIOA->IDR & (1 << 0)) || !(GPIOA->IDR & (1 << 1)))
+        // Left T-junction detected
+        if (!(GPIOA->IDR & (1 << 0)) && !(GPIOA->IDR & (1 << 1)) && (!(GPIOA->IDR & (1 << 7)) || !(GPIOA->IDR & (1 << 5))) && (GPIOA->IDR & (1 << 10)))
         {
-             printf("partial straight\n");
-             full_speed();
+            printf("Left T-junction detected\n");
+            while (!(GPIOA->IDR & (1 << 10)))
+            {
+                full_speed_right();
+                stop_left();
+            }
+        }
 
-       }
+        // Right T-junction detected
+        else if (!(GPIOA->IDR & (1 << 0)) && !(GPIOA->IDR & (1 << 1)) && (GPIOA->IDR & (1 << 7)) && (!(GPIOA->IDR & (1 << 10)) || !(GPIOA->IDR & (1 << 6))))
+        {
+            printf("Right T-junction detected\n");
+            while (!(GPIOA->IDR & (1 << 7)))
+            {
+                full_speed_left();
+                stop_right();
+            }
+        }
 
-         else if  (!(GPIOA->IDR & (1 << 0)) && !(GPIOA->IDR & (1 << 1)) && (GPIOA->IDR & (1 << 2)) && (GPIOA->IDR & (1 << 3))) // Going straight
-         {
-        	 printf("going straight\n");
-        	 full_speed();
-         }
-	  }
-	  else  // else super-structure for dark surface (inverted)
-	  {
-		  if (GPIOA->IDR == (1 << 6))  // main if super-structure for light surface (non-inverted)
-		  	  {
+        // Straight T-junction detected
+        else if (!(GPIOA->IDR & (1 << 0)) && !(GPIOA->IDR & (1 << 1)) && (!(GPIOA->IDR & (1 << 7))) && !(GPIOA->IDR & (1 << 10)))
+        {
+            static int x = 0;
+            x++;
+            printf("Straight T-junction detected, count: %d\n", x);
+            if ((x == 0) || (x == 1))
+            {
+                full_speed();
+            }
+            else if ((x == 2) || (x == 3))
+            {
+                while (!(GPIOA->IDR & (1 << 10)))
+                {
+                    full_speed_right();
+                    stop_left();
+                }
+            }
+        }
 
-		           if ((GPIOA->IDR & (1 << 0)) && (GPIOA->IDR & (1 << 1)) && ((GPIOA->IDR & (1 << 2)) || (GPIOA->IDR & (1 << 5)) ) && !(GPIOA->IDR & (1 << 3)))
-		           {
-		          	 printf("left t junction detected\n");
-		          	 while (!(GPIOA->IDR & (1 << 3)))
-		                    {
-		          	       full_speed_right();
-		          	       stop_left();
-		                   };
-		           }
+        // Turning right
+        else if (((GPIOA->IDR & (1 << 7)) || (GPIOA->IDR & (1 << 5))) && (!(GPIOA->IDR & (1 << 10)) || !(GPIOA->IDR & (1 << 6))))
+        {
+            printf("Turning right\n");
+            full_speed_left();
+            stop_right();
+        }
 
-		           else if ((GPIOA->IDR & (1 << 0)) && (GPIOA->IDR & (1 << 1)) && !(GPIOA->IDR & (1 << 2)) && ((GPIOA->IDR & (1 << 3)) || (GPIOA->IDR & (1 << 6))))
-		           {
-		                printf("right t junction detected\n");
-		                while (!(GPIOA->IDR & (1 << 2)))
-		                    {
-		                       full_speed_left();
-		                        stop_right();
-		                    }
-		           }
-		           else if ((GPIOA->IDR & (1 << 0)) && (GPIOA->IDR & (1 << 1)) && ((GPIOA->IDR & (1 << 2))) && (GPIOA->IDR & (1 << 3)))
-		           {
-		          	 int x = 0;
-		          	 x++;
-		          	 printf("t junction detected\n");
-		          	 if((x == 0) || (x==1))
-		          	 {
-		          	    full_speed();
-		          	}
-		          	 else if ((x == 2) || (x==3))
-		          	 {
-		          	     while (!(GPIOA->IDR & (1 << 3)))
-		          	     {
-		          	    	 full_speed_right();
-		          	    	 stop_left();
-		          	     }
+        // Turning left
+        else if ((!(GPIOA->IDR & (1 << 7)) || !(GPIOA->IDR & (1 << 5)))  && ((GPIOA->IDR & (1 << 10)) || (GPIOA->IDR & (1 << 6))))
+        {
+            printf("Turning left\n");
+            full_speed_right();
+            stop_left();
+        }
 
-		          	 }
-		           }
+        // Partial straight
+        else if (!(GPIOA->IDR & (1 << 0)) || !(GPIOA->IDR & (1 << 1)))
+        {
+            printf("Partial straight detected\n");
+            full_speed();
+        }
 
-		           else if ((!(GPIOA->IDR & (1 << 2)) || !(GPIOA->IDR & (1 << 5))) && ((GPIOA->IDR & (1 << 3)) || (GPIOA->IDR & (1 << 6))))
-		           {
-		               printf("turning right\n");
-		          	 full_speed_left();
-		               stop_right();
-		           }
-
-
-		           else if (((GPIOA->IDR & (1 << 2)) || (GPIOA->IDR & (1 << 5))  ) && (!(GPIOA->IDR & (1 << 3)) || !(GPIOA->IDR & (1 << 6)))) // Turning left
-		  		 {
-		          	 printf("turning left\n");
-		          	 full_speed_right();
-		          	 stop_left();
-		  		 }
-
-
-		           else if ((GPIOA->IDR & (1 << 0)) || (GPIOA->IDR & (1 << 1)))
-		          {
-		               printf("partial straight\n");
-		               full_speed();
-
-		         }
-
-		           else if  ((GPIOA->IDR & (1 << 0)) && (GPIOA->IDR & (1 << 1)) && !(GPIOA->IDR & (1 << 2)) && !(GPIOA->IDR & (1 << 3))) // Going straight
-		           {
-		          	 printf("going straight\n");
-		          	 full_speed();
-		           }
-		  	  }
-	  }
-  }
-
-
+        // Full straight
+        else if  (!(GPIOA->IDR & (1 << 0)) && !(GPIOA->IDR & (1 << 1)) && (GPIOA->IDR & (1 << 7)) && (GPIOA->IDR & (1 << 10)))
+        {
+            printf("Going straight\n");
+            full_speed();
+        }
+        else
+        {
+            printf("No line detected, stopping\n");
+            stop();
+            stop_right();
+            stop_left();
+        }
+    }
 }
-
-
-
-
