@@ -30,8 +30,8 @@ void gpioa_input_config(void)
 	   GPIOA->MODER  &=~ (1<<4); //PA2
 	   GPIOA->MODER  &=~ (1<<5);
 
-	   GPIOA->MODER  &=~ (1<<6); //PA3
-	   GPIOA->MODER  &=~ (1<<7);
+	   GPIOA->MODER  &=~ (1<<20); //PA3
+	   GPIOA->MODER  &=~ (1<<21);
 
 	   GPIOA->MODER  &=~ (1<<8); //PA4
 	   GPIOA->MODER  &=~ (1<<9);
@@ -41,6 +41,9 @@ void gpioa_input_config(void)
 
 	   GPIOA->MODER  &=~ (1<<12); //PA6
 	   GPIOA->MODER  &=~ (1<<13);
+
+	   GPIOA->MODER  &=~ (1<<14); //PA7
+	   GPIOA->MODER  &=~ (1<<15);
 }
 
 void gpiob_output_config(void)
@@ -70,28 +73,30 @@ void gpiob_output_config(void)
 
 void gpio_pupdr_config(void)
 {
+    // Pull-down enabled for all relevant pins
+    GPIOA->PUPDR &=~ ((1 << 0) | (1 << 1));  // PA0 pull-down
+    GPIOA->PUPDR |=  (1 << 1);               // Ensure the second bit is set
 
-	//Pull down enabled for all
-	   GPIOA->PUPDR  &=~ (1<<0); //PA0
-	   GPIOA->PUPDR  |= (1<<1);
+    GPIOA->PUPDR &=~ ((1 << 2) | (1 << 3));  // PA1 pull-down
+    GPIOA->PUPDR |=  (1 << 3);               // Ensure the second bit is set
 
-	   GPIOA->PUPDR  &=~ (1<<2); //PA1
-	   GPIOA->PUPDR  |= (1<<3);
+    GPIOA->PUPDR &=~ ((1 << 4) | (1 << 5));  // PA2 pull-down
+    GPIOA->PUPDR |=  (1 << 5);               // Ensure the second bit is set
 
-	   GPIOA->PUPDR  &=~ (1<<4); //PA2
-	   GPIOA->PUPDR  |= (1<<5);
+    GPIOA->PUPDR &=~ ((1 << 20) | (1 << 21));  // PA3 pull-down
+    GPIOA->PUPDR |=  (1 << 21);               // Ensure the second bit is set
 
-	   GPIOA->PUPDR  &=~ (1<<6); //PA3
-	   GPIOA->PUPDR  |= (1<<7);
+    GPIOA->PUPDR &=~ ((1 << 8) | (1 << 9));  // PA4 pull-down
+    GPIOA->PUPDR |=  (1 << 9);               // Ensure the second bit is set
 
-	   GPIOA->PUPDR  &=~ (1<<8); //PA4
-	   GPIOA->PUPDR  |= (1<<9);
+    GPIOA->PUPDR &=~ ((1 << 10) | (1 << 11)); // PA5 pull-down
+    GPIOA->PUPDR |=  (1 << 11);              // Ensure the second bit is set
 
-	   GPIOA->PUPDR  &=~ (1<<10); //PA5
-	   GPIOA->PUPDR  |= (1<<11);
+    GPIOA->PUPDR &=~ ((1 << 12) | (1 << 13)); // PA6 pull-down
+    GPIOA->PUPDR |=  (1 << 13);              // Ensure the second bit is set
 
-	   GPIOA->PUPDR  &=~ (1<<12); //PA6
-	   GPIOA->PUPDR  |= (1<<13);
+    GPIOA->PUPDR &=~ ((1 << 14) | (1 << 15)); // PA7 pull-down
+    GPIOA->PUPDR |=  (1 << 15);              // Ensure the second bit is set
 }
 
 
@@ -176,7 +181,7 @@ void stop(void)
 }
 
 void delay_1_sec(void) {
-    uint32_t count = 8000000;
+    uint32_t count = 100000;
 
     while (count > 0) {
         count--;
