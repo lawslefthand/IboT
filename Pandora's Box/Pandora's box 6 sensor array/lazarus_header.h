@@ -2,7 +2,7 @@
  * lazarus_header.h
  *
  *  Created on: Sep 5, 2024
- *      Author: danba
+ *      Author: Aryan Basnet
  */
 
 #ifndef SRC_LAZARUS_HEADER_H_
@@ -22,6 +22,7 @@ void half_speed_left(void);
 void half_speed_right(void);
 void stop_right(void);
 void stop_left(void);
+void delay_1_sec(void);
 
 
 
