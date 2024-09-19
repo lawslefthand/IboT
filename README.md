@@ -42,14 +42,34 @@ This project is licensed under the MIT License.
 *************
 ![image](https://github.com/user-attachments/assets/2ce540c7-4a0a-493d-913a-5db3a254d530)
 
-Pandara's Box - Competitive Line-Following Robot
-Pandara's Box is a line-following robot developed for the "Search and Destroy" competition at COEP MindSpark. This bot is built on the STM32 Nucleo-F030R8 and uses digital IR sensors to detect lines and intersections. It features advanced detection of T-junctions (left, right, and straight) and inverted color patterns, ensuring it can navigate complex tracks.
+# Pandara's Box - Competitive Line-Following Robot
 
-Key Features:
-1)STM32 Nucleo-F030R8 Microcontroller: Low-cost, efficient MCU running ARM CMSIS standard.
-2)Digital IR Sensors: Optimized for accurate line and intersection detection.
-3)Advanced Junction Detection: Recognizes T-junctions (left, right, straight) for smooth transitions.
-4)Inverted Color Detection: Capable of handling both normal and inverted tracks (black on white, and white on black).
-5)Coded in C using CMSIS: Built using ARM's CMSIS standard in STM32CubeIDE for high performance.
+**Pandara's Box** is a line-following robot developed for the "Search and Destroy" competition at COEP MindSpark. This bot is built on the STM32 Nucleo-F030R8 and uses digital IR sensors to detect lines and intersections. It features advanced detection of T-junctions (left, right, and straight) and inverted color patterns, ensuring it can navigate complex tracks.
+
+## Key Features
+
+1. **STM32 Nucleo-F030R8 Microcontroller**: Low-cost, efficient MCU running ARM CMSIS standard.
+2. **Digital IR Sensors**: Optimized for accurate line and intersection detection.
+3. **Advanced Junction Detection**: Recognizes T-junctions (left, right, straight) for smooth transitions.
+4. **Inverted Color Detection**: Capable of handling both normal and inverted tracks (black on white, and white on black).
+5. **Coded in C using CMSIS**: Built using ARM's CMSIS standard in STM32CubeID.
+
+## Technologies Used
+
+- **STM32 Nucleo-F030R8**: Low-cost microcontroller.
+- **Digital IR Sensors**: Used for line and intersection detection.
+- **CMSIS**: ARM Cortex Microcontroller Software Interface Standard.
+- **C Programming**: For precise control and sensor integration.
+  
+## Hardware used
+
+ **List**:
+   - STM32 Nucleo-F030R8.
+   - Digital IR sensors for line detection.
+   - N20 Motors (600RPM , 12V).
+   - 11.1V RobuPro 2000 mAh batteries. 
+   - L298N Motor driver.
+
+
 
 
