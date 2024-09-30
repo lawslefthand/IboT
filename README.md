@@ -42,9 +42,9 @@ This project is licensed under the MIT License.
 *************
 ![image](https://github.com/user-attachments/assets/2ce540c7-4a0a-493d-913a-5db3a254d530)
 
-# Pandara's Box - Competitive Line-Following Robot
+# Pandora's Box - Competitive Line-Following Robot
 
-**Pandara's Box** is a line-following robot developed for the "Search and Destroy" competition at COEP MindSpark. This bot is built on the STM32 Nucleo-F030R8 and uses digital IR sensors to detect lines and intersections. It features advanced detection of T-junctions (left, right, and straight) and inverted color patterns, ensuring it can navigate complex tracks.
+**Pandora's Box** is a line-following robot developed for the "Search and Destroy" competition at COEP MindSpark. This bot is built on the STM32 Nucleo-F030R8 and uses digital IR sensors to detect lines and intersections. It features advanced detection of T-junctions (left, right, and straight) and inverted color patterns, ensuring it can navigate complex tracks.
 
 ## Key Features
 
