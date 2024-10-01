@@ -30,7 +30,7 @@ void gpioa_input_config(void)
 	   GPIOA->MODER  &=~ (1<<4); //PA2
 	   GPIOA->MODER  &=~ (1<<5);
 
-	   GPIOA->MODER  &=~ (1<<20); //PA3
+	   GPIOA->MODER  &=~ (1<<20); //PA10
 	   GPIOA->MODER  &=~ (1<<21);
 
 	   GPIOA->MODER  &=~ (1<<8); //PA4
@@ -53,8 +53,8 @@ void gpiob_output_config(void)
 	   GPIOB->MODER  |= (1<<0); //PB0  ENA
 	   GPIOB->MODER  &=~ (1<<1);
 
-	   GPIOB->MODER  |= (1<<2); //PB1  IN1
-	   GPIOB->MODER  &=~ (1<<3);
+	    GPIOB->MODER  |= (1<<12); // PB6 IN1
+	    GPIOB->MODER  &=~ (1<<13);
 
 	   GPIOB->MODER  |= (1<<4); //PB2  IN2
 	   GPIOB->MODER  &=~ (1<<5);
@@ -104,79 +104,62 @@ void gpio_pupdr_config(void)
 
 void full_speed(void)
 {
-	 GPIOB->BSRR |=  (1<<0);
-	 GPIOB->BSRR |=  (1<<1);
-	 GPIOB->BSRR &=~ (1<<2);
-	 GPIOB->BSRR |=  (1<<3);
-	 GPIOB->BSRR |=  (1<<4);
-	 GPIOB->BSRR &=~ (1<<5);
+
+	 GPIOB->ODR &= ~GPIO_ODR_6; // IN1 LOW
+		    GPIOB->ODR |= GPIO_ODR_2;  // IN2 HIGH
+		    GPIOB->ODR |= GPIO_ODR_0;  // ENA HIGH (Enable Motor A)
+		    GPIOB->ODR |= GPIO_ODR_4;  // IN3 HIGH
+		    	    GPIOB->ODR &= ~GPIO_ODR_5; // IN4 LOW
+		    	    GPIOB->ODR |= GPIO_ODR_3;  // ENB HIGH (Enable Motor B)
 
 }
 
 void full_speed_left(void)
 {
-	GPIOB->BSRR |=  (1<<0);
-    GPIOB->BSRR |=  (1<<1);
-    GPIOB->BSRR &=~ (1<<2);
-
-    GPIOB->BSRR |=  (1<<3);
-    GPIOB->BSRR &=~  (1<<4);
-    GPIOB->BSRR &=~ (1<<5);
+	 GPIOB->ODR |= GPIO_ODR_6; // IN1 high
+		    GPIOB->ODR &=~ GPIO_ODR_2;  // IN2 low
+		//    GPIOB->ODR |= GPIO_ODR_0;  // ENA HIGH (Enable Motor A)
 
 
 }
 void full_speed_right(void)
 {
-	GPIOB->BSRR |=  (1<<3);
-    GPIOB->BSRR |=  (1<<4);
-    GPIOB->BSRR &=~ (1<<5);
-
-    GPIOB->BSRR  |=    (1<<0);
-    GPIOB->BSRR  &=~  (1<<1);
-    GPIOB->BSRR  &=~   (1<<2);
+	GPIOB->ODR |= GPIO_ODR_4;  // IN3 HIGH
+	    GPIOB->ODR &= ~GPIO_ODR_5; // IN4 LOW
+	    GPIOB->ODR |= GPIO_ODR_3;  // ENB HIGH (Enable Motor B)
 
 }
 
 void reverse_left(void)
 {
-	    GPIOB->BSRR |=  (1<<0);
-	    GPIOB->BSRR &=~  (1<<1);
-	    GPIOB->BSRR |= (1<<2);
-
+	   GPIOB->ODR &=~ GPIO_ODR_6; // IN1 low
+	    GPIOB->ODR |= GPIO_ODR_2;  // IN2 high
+	    GPIOB->ODR |= GPIO_ODR_0;  // ENA HIGH (Enable Motor A)
 
 }
 void reverse_right(void)
 {
-	  GPIOB->BSRR |=  (1<<0);
-	  GPIOB->BSRR &=~  (1<<1);
-	  GPIOB->BSRR |=    (1<<2);
+	GPIOB->ODR &= ~GPIO_ODR_4; // IN3 LOW
+	    GPIOB->ODR |= GPIO_ODR_5;  // IN4 HIGH
+	    GPIOB->ODR |= GPIO_ODR_3;  // ENB HIGH (Enable Motor B)
 
 }
 
 void stop_left(void)
 {
-	    GPIOB->BSRR &=~  (1<<3);
-	    GPIOB->BSRR &=~  (1<<4);
-	    GPIOB->BSRR &=~ (1<<5);
+	GPIOB->ODR &= ~GPIO_ODR_0 ;  // ENA and ENB LOW (disable both motors)
 
 
 }
 
 void stop_right(void)
 {
-	  GPIOB->BSRR &=~  (1<<3);
-      GPIOB->BSRR &=~  (1<<4);
-      GPIOB->BSRR &=~ (1<<5);
+	GPIOB->ODR &= ~GPIO_ODR_3;  // ENA and ENB LOW (disable both motors)
 }
 
 void stop(void)
 {
-	        GPIOB->BSRR &=~  (1<<3);
-		    GPIOB->BSRR &=~  (1<<4);
-		    GPIOB->BSRR &=~ (1<<5);
-		    GPIOB->BSRR &=~  (1<<3);
-		    GPIOB->BSRR &=~  (1<<4);
-		    GPIOB->BSRR &=~ (1<<5);
+	GPIOB->ODR &= ~(GPIO_ODR_0 | GPIO_ODR_3);  // ENA and ENB LOW (disable both motors)
 
 }
 
@@ -187,6 +170,48 @@ void delay_1_sec(void) {
         count--;
     }
 }
+
+void pwm_config(void)
+{
+    // Configure TIM3 for PWM
+    TIM3->PSC = 19;  // Prescaler for 20 kHz PWM
+    TIM3->ARR = 39;  // Auto-reload value
+    TIM3->CCR3 = 0;  // Initial duty cycle (0%)
+
+    // Configure TIM3 Channel 3 as PWM mode 1
+    TIM3->CCMR2 |= TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3PE; // PWM mode 1, preload enable
+    TIM3->CCER |= TIM_CCER_CC3E; // Enable output on Channel 3
+    TIM3->CR1 |= TIM_CR1_ARPE;   // Enable auto-reload preload
+    TIM3->CR1 |= TIM_CR1_CEN;    // Enable the timer
+}
+
+void alt_gpiob_output_config(void)
+{
+
+
+	   GPIOB->MODER &= ~(3 << (0 * 2)); // Clear mode bits for PB0
+	    GPIOB->MODER |= (2 << (0 * 2));  // Set PB0 to alternate function mode
+	    GPIOB->AFR[0] &= ~(0xF << (0 * 4)); // Clear AFR for PB0
+	    GPIOB->AFR[0] |= (1 << (0 * 4));    // Set PB0 to AF1 (TIM3_CH3)
+
+	    GPIOB->MODER  |= (1<<12); // PB6 IN1
+	    GPIOB->MODER  &=~ (1<<13);
+
+	   GPIOB->MODER  |= (1<<4); //PB2  IN2
+	   GPIOB->MODER  &=~ (1<<5);
+
+	   GPIOB->MODER  |= (1<<6); //PB3  ENB
+	   GPIOB->MODER  &=~ (1<<7);
+
+	   GPIOB->MODER  |= (1<<8); //PB4  IN3
+	   GPIOB->MODER  &=~ (1<<9);
+
+	   GPIOB->MODER  |= (1<<10); //PB5 IN4
+	   GPIOB->MODER  &=~ (1<<11);
+
+
+}
+
 
 
 
