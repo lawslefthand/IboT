@@ -161,7 +161,7 @@ void pwm_config(void)
 void alt_gpiob_output_config(void)
 {
     GPIOB->MODER &= ~(3 << (0 * 2));  // PB0
-    GPIOB->MODER |= (2 << (0 * 2));   // Set PB0 to alternate function mode
+    GPIOB->MODER |= (2 << (0 * 2));   // PB0 alternate function mode
     GPIOB->AFR[0] &= ~(0xF << (0 * 4));
     GPIOB->AFR[0] |= (1 << (0 * 4));  // PB0 to AF1 (TIM3_CH3)
 
