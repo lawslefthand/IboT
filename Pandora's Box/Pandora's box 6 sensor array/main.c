@@ -18,7 +18,7 @@ int main()
     {
     	delay_1_sec();
 
-        // Print sensor states (high/low) before the decision-making logic
+      
         printf("PA0 (Center): %d, PA1 (Front Center): %d, PA7 (Left): %d, PA5 (Left): %d, PA10 (Right): %d, PA6 (Right): %d\n",
                 !(GPIOA->IDR & (1 << 0)), !(GPIOA->IDR & (1 << 1)), !(GPIOA->IDR & (1 << 7)),
                 !(GPIOA->IDR & (1 << 5)), !(GPIOA->IDR & (1 << 10)), !(GPIOA->IDR & (1 << 6)));
