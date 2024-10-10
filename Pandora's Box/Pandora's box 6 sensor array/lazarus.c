@@ -4,6 +4,7 @@
 #include "usart.h"
 #include <stdio.h>
 #include "lazarus_header.h"
+#define speed 70
 
 void clk_en(void)
 {
@@ -80,26 +81,43 @@ void gpio_pupdr_config(void)
     GPIOA->PUPDR |=  (1 << 15);
 }
 
+void turn_left(void)
+{
+	            printf("Turning left\n");
+	            full_speed_right();
+	            reverse_left();
+}
+
+void turn_right(void)
+{
+	            printf("Turning right\n");
+	            full_speed_left();
+	            reverse_right();
+}
+
 void full_speed(void)
 {
     GPIOB->ODR &= ~GPIO_ODR_6; // IN1 LOW
     GPIOB->ODR |= GPIO_ODR_2;  // IN2 HIGH
-    GPIOB->ODR |= GPIO_ODR_0;  // ENA HIGH
-    GPIOB->ODR |= GPIO_ODR_4;  // IN3 HIGH
-    GPIOB->ODR &= ~GPIO_ODR_5; // IN4 LOW
-    GPIOB->ODR |= GPIO_ODR_3;  // ENB HIGH
+    TIM3->CCR3 = speed;
+    GPIOB->ODR &=~ GPIO_ODR_4;  // IN3 HIGH
+    GPIOB->ODR |= GPIO_ODR_5; // IN4 LOW
+
 }
 
 void full_speed_left(void)
 {
     GPIOB->ODR &=~ GPIO_ODR_6; // IN1 high
     GPIOB->ODR |= GPIO_ODR_2;  // IN2 low
+	 TIM3->CCR3 = speed;
 }
 
 void full_speed_right(void)
 {
-    GPIOB->ODR |= GPIO_ODR_4;  // IN3 HIGH
-    GPIOB->ODR &= ~GPIO_ODR_5; // IN4 LOW
+	GPIOB->ODR &=~ GPIO_ODR_4;  // IN3 HIGH
+	    GPIOB->ODR |= GPIO_ODR_5; // IN4 LOW
+
+    TIM3->CCR3 = speed;
 
 }
 
@@ -107,29 +125,34 @@ void reverse_left(void)
 {
     GPIOB->ODR |= GPIO_ODR_6;  // IN1 low
     GPIOB->ODR &=~ GPIO_ODR_2; // IN2 high
+	 TIM3->CCR3 = speed;
 
 }
 
 void reverse_right(void)
 {
-    GPIOB->ODR &=~ GPIO_ODR_4; // IN3 HIGH
-    GPIOB->ODR |= GPIO_ODR_5;  // IN4 LOW
+    GPIOB->ODR |= GPIO_ODR_4; // IN3 HIGH
+    GPIOB->ODR &=~ GPIO_ODR_5;  // IN4 LOW
+    TIM3->CCR3 = speed;
 
 }
 
 void stop_left(void)
 {
-    GPIOB->ODR &= ~GPIO_ODR_0;  // ENA LOW
+	 GPIOB->ODR  &=~ GPIO_ODR_6; // IN1 high
+	    GPIOB->ODR  &=~ GPIO_ODR_2;  // IN2 low
 }
 
 void stop_right(void)
 {
-    GPIOB->ODR &= ~GPIO_ODR_3;  // ENB LOW
+	 GPIOB->ODR &= ~GPIO_ODR_4;  // IN3 HIGH
+	    GPIOB->ODR &= ~GPIO_ODR_5; // IN4 LOW
+
 }
 
 void stop(void)
 {
-    GPIOB->ODR &= ~(GPIO_ODR_0 | GPIO_ODR_3);  // ENA and ENB LOW
+	 TIM3->CCR3 = 0;
 }
 
 void delay_1_sec(void)
@@ -161,7 +184,7 @@ void pwm_config(void)
 void alt_gpiob_output_config(void)
 {
     GPIOB->MODER &= ~(3 << (0 * 2));  // PB0
-    GPIOB->MODER |= (2 << (0 * 2));   // PB0 alternate function mode
+    GPIOB->MODER |= (2 << (0 * 2));   // PB0 to alternate function mode
     GPIOB->AFR[0] &= ~(0xF << (0 * 4));
     GPIOB->AFR[0] |= (1 << (0 * 4));  // PB0 to AF1 (TIM3_CH3)
 
